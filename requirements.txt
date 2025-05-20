@@ -1,2 +1,2 @@
-pip install os-sys
-pip install sockets
+os-sys
+sockets
