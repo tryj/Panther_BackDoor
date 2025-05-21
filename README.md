@@ -17,6 +17,7 @@ Activate the server
 ``` bash
 python server.py
 ```
+![Run_server](Run_server.png)
 
 Launch the client on the victim machine
 ``` bash
