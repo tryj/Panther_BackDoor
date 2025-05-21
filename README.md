@@ -23,6 +23,8 @@ Launch the client on the victim machine
 ``` bash
 python client.py
 ```
+![Run_client](Run_client.png)
+enter ip
 
 ## command
 view_cmd: View path address
