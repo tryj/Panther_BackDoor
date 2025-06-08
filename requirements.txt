@@ -1,2 +1,3 @@
 os-sys
 sockets
+pywin32-ctypes
