@@ -25,6 +25,7 @@ python client.py
 ```
 ![Run_client](Run_client.png)
 enter ip
+enter port
 
 ## command
 view_cmd: View path address
