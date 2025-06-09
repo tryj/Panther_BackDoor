@@ -50,3 +50,7 @@ send_files:
 2.Enter the address where you want the sent files to be delivered, along with the file name and extension.
 
 sleep: Turn off the victim
+
+change_desktop:
+
+1.Enter file image path(on the victim's machine)
